@@ -117,6 +117,18 @@
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   transition: all 0.3s ease;
+  position: relative;
+}
+
+.userButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-primary);
 }
 
 .userSection:hover {
@@ -128,9 +140,98 @@
   border: 2px solid var(--accent-color);
 }
 
+.userAvatarPlaceholder {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
 .userName {
   font-weight: 500;
   color: var(--text-primary);
+}
+
+.dropdownArrow {
+  transition: transform 0.2s ease;
+}
+
+.dropdownArrowUp {
+  transform: rotate(180deg);
+}
+
+.userDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  width: 220px;
+  background: var(--card-bg);
+  border-radius: 0.5rem;
+  box-shadow: var(--dropdown-shadow);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  z-index: 101;
+  animation: dropdownFadeIn 0.2s ease forwards;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.userDropdownHeader {
+  padding: 0.75rem 1rem;
+}
+
+.userEmail {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  word-break: break-all;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background-color: var(--border-color);
+  width: 100%;
+}
+
+.logoutButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary);
+  transition: background-color 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: var(--hover-bg);
+  color: var(--danger-color, #f44336);
+}
+
+.logoutButton svg {
+  color: var(--text-secondary);
+}
+
+.logoutButton:hover svg {
+  color: var(--danger-color, #f44336);
 }
 
 .signInButton {
@@ -174,5 +275,17 @@
 
   .signInButton {
     padding: 0.5rem;
+  }
+
+  .userDropdown {
+    right: -1rem;
+  }
+  
+  .dropdownArrow {
+    display: none;
+  }
+  
+  .userAvatarPlaceholder {
+    margin-right: 0;
   }
 } 

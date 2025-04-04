@@ -1,8 +1,8 @@
 'use client';
 
-import { SessionProvider, useSession } from 'next-auth/react';
+import { SessionProvider, useSession, signOut } from 'next-auth/react';
 import { ThemeProvider, useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ProgressProvider } from '../contexts/ProgressContext';
 import Background3D from './Background3D.client';
 import Link from 'next/link';
@@ -70,6 +70,26 @@ function ThemeToggle() {
 
 function Navbar() {
   const { data: session } = useSession();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    signOut({ callbackUrl: '/' });
+  };
 
   return (
     <nav className={styles.nav}>
@@ -94,20 +114,60 @@ function Navbar() {
         <div className={styles.navbarRight}>
           <ThemeToggle />
           {session ? (
-            <div className={styles.userSection}>
-              {session.user?.image && (
-                <Image
-                  src={session.user.image}
-                  alt={session.user.name || 'User avatar'}
-                  width={32}
-                  height={32}
-                  className={styles.userAvatar}
-                  priority
-                />
+            <div className={styles.userSection} ref={dropdownRef}>
+              <button 
+                className={styles.userButton} 
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                aria-expanded={dropdownOpen}
+                aria-haspopup="true"
+              >
+                {session.user?.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt={session.user.name || 'User avatar'}
+                    width={32}
+                    height={32}
+                    className={styles.userAvatar}
+                    priority
+                  />
+                ) : (
+                  <div className={styles.userAvatarPlaceholder}>
+                    {session.user?.name?.charAt(0) || 'U'}
+                  </div>
+                )}
+                <span className={styles.userName}>
+                  {session.user?.name || 'User'}
+                </span>
+                <svg 
+                  className={`${styles.dropdownArrow} ${dropdownOpen ? styles.dropdownArrowUp : ''}`} 
+                  width="12" 
+                  height="6" 
+                  viewBox="0 0 12 6" 
+                  fill="none"
+                >
+                  <path d="M1 1L6 5L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              
+              {dropdownOpen && (
+                <div className={styles.userDropdown}>
+                  <div className={styles.userDropdownHeader}>
+                    <span className={styles.userEmail}>{session.user?.email}</span>
+                  </div>
+                  <div className={styles.dropdownDivider}></div>
+                  <button 
+                    className={styles.logoutButton}
+                    onClick={handleLogout}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                      <polyline points="16 17 21 12 16 7"></polyline>
+                      <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Log out</span>
+                  </button>
+                </div>
               )}
-              <span className={styles.userName}>
-                {session.user?.name || 'User'}
-              </span>
             </div>
           ) : (
             <Link href="/auth/signin" className={styles.signInButton}>

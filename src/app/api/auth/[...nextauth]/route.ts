@@ -3,17 +3,29 @@ import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import { JWT } from 'next-auth/jwt';
 
-const handler = NextAuth({
-  providers: [
+// Only include providers that have the required credentials
+const providers = [];
+
+if (process.env.GITHUB_ID && process.env.GITHUB_SECRET) {
+  providers.push(
     GithubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
-    }),
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+    })
+  );
+}
+
+if (process.env.GOOGLE_ID && process.env.GOOGLE_SECRET) {
+  providers.push(
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID!,
-      clientSecret: process.env.GOOGLE_SECRET!,
-    }),
-  ],
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
+    })
+  );
+}
+
+const handler = NextAuth({
+  providers,
   callbacks: {
     async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
@@ -24,6 +36,7 @@ const handler = NextAuth({
   },
   pages: {
     signIn: '/auth/signin',
+    error: '/auth/error',
   },
 });
 

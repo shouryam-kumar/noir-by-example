@@ -8,9 +8,10 @@ import styles from './page.module.css';
 
 interface ChallengeContentProps {
   id: string;
+  demoMode?: boolean;
 }
 
-export default function ChallengeContent({ id }: ChallengeContentProps) {
+export default function ChallengeContent({ id, demoMode = false }: ChallengeContentProps) {
   const [isCorrect, setIsCorrect] = useState(false);
   const { updateProgress } = useProgress();
   
@@ -86,7 +87,9 @@ export default function ChallengeContent({ id }: ChallengeContentProps) {
 
     if (normalizedUserCode === normalizedSolution) {
       setIsCorrect(true);
-      updateProgress(id, true);
+      if (!demoMode) {
+        updateProgress(id, true);
+      }
     } else {
       setIsCorrect(false);
     }
@@ -183,6 +186,11 @@ export default function ChallengeContent({ id }: ChallengeContentProps) {
             hints={challenge.hints || []}
             solution={challenge.solution}
           />
+          {demoMode && isCorrect && (
+            <div className={styles.demoSuccessMessage}>
+              Great job! Sign in to save your progress.
+            </div>
+          )}
         </div>
       </div>
     </div>
