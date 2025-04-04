@@ -1,0 +1,264 @@
+.editorContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--card-bg);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  height: 100%;
+  position: relative;
+}
+
+.editorWrapper {
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  overflow: hidden;
+  position: relative;
+  min-height: 200px;
+  max-height: 100%;
+  resize: vertical;
+}
+
+.resizer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  cursor: ns-resize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  z-index: 10;
+}
+
+.resizerHandle {
+  width: 50px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--border-color);
+  transition: background 0.2s;
+}
+
+.resizer:hover .resizerHandle {
+  background: var(--accent-color);
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submitButton {
+  background: var(--primary-color);
+  color: white;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--primary-color-dark);
+}
+
+.resetButton {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.resetButton:hover:not(:disabled) {
+  background: var(--secondary-color-dark);
+}
+
+.hintButton {
+  background: var(--accent-color);
+  color: white;
+}
+
+.hintButton:hover:not(:disabled) {
+  background: var(--accent-color-dark);
+}
+
+.solutionButton {
+  background: var(--success-color);
+  color: white;
+}
+
+.solutionButton:hover:not(:disabled) {
+  background: var(--success-color-dark);
+}
+
+.hintSection {
+  background: var(--hint-bg);
+  border: 1px solid var(--hint-border);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.hintSection h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.hint {
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-left: 3px solid var(--accent-color);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.hint:last-child {
+  margin-bottom: 0;
+}
+
+.hint p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.successMessage {
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  color: var(--success-text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.errorMessage {
+  background: var(--error-bg, rgba(239, 68, 68, 0.1));
+  border: 1px solid var(--error-border, rgba(239, 68, 68, 0.3));
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  color: var(--error-text, #b91c1c);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.successMessage p,
+.errorMessage p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.solutionDialogOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+}
+
+.solutionDialog {
+  background: var(--card-bg);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+  animation: slideUp 0.3s ease;
+}
+
+.solutionDialog h3 {
+  color: var(--text-primary);
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.solutionDialog p {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.dialogButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.cancelButton {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.cancelButton:hover {
+  background: var(--secondary-color-dark);
+}
+
+.confirmButton {
+  background: var(--danger-color, #ef4444);
+  color: white;
+}
+
+.confirmButton:hover {
+  background: var(--danger-color-dark, #b91c1c);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+  }
+  
+  .button {
+    width: 100%;
+  }
+} 

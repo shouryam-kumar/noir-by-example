@@ -1,0 +1,39 @@
+{
+  "name": "noir-by-example",
+  "version": "1.0.0",
+  "description": "Interactive platform for learning Noir through examples",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "noir",
+    "zero-knowledge",
+    "learning",
+    "interactive"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.8.0",
+    "@monaco-editor/react": "^4.7.0",
+    "@prisma/client": "^6.5.0",
+    "monaco-editor": "^0.52.2",
+    "next": "^15.2.4",
+    "next-auth": "^4.24.11",
+    "next-themes": "^0.4.6",
+    "prisma": "^6.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.14.0",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.2",
+    "typescript": "5.8.2"
+  }
+}

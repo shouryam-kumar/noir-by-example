@@ -1,0 +1,158 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+yarn.lock
+package-lock.json
+
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+/.swc/
+next-env.d.ts
+
+# Production
+/build
+/dist
+
+# Misc
+.DS_Store
+*.pem
+Thumbs.db
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local env files
+.env*.local
+.env
+.env.development
+.env.test
+.env.production
+
+# Secrets
+**/auth/**/*.json
+**/secrets.json
+**/config.json
+**/*.key
+**/*.pem
+**/credentials/
+**/*_credentials.*
+
+# TypeScript
+*.tsbuildinfo
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Cache and logs
+/.sass-cache
+/connect.lock
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+.eslintcache
+.stylelintcache
+.turbo
+
+# vercel
+.vercel
+
+# Temp
+.temp
+.tmp
+.cache
+.firebase
+
+# Serverless generated files
+.serverless/
+
+# Personal notes
+TODO.md
+NOTES.md
+REVIEW.md
+SCRATCH.md
+
+# Database dumps, backups, etc.
+*.sqlite
+*.sqlite3
+*.db
+*.sql
+*.backup
+*.dump
+
+# Session data
+.sessions/
+sessions/
+
+# Generated content
+public/generated/
+**/generated/content
+
+# Logs
+logs
+*.log
+
+# Images (add if your repo should ignore images)
+# *.jpg
+# *.jpeg
+# *.png
+# *.gif
+# *.webp
+# *.svg
+
+# Sensitive configuration
+**/config/auth.json
+**/config/credentials.json
+**/config/keys.json
+**/config/*secrets*
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+# Windows specific
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux specific
+*~
+.directory
+.Trash-*
