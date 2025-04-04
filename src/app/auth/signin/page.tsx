@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { signIn, getProviders } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import styles from './page.module.css';
 
-export default function SignIn() {
+function SignInContent() {
   const [providers, setProviders] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
@@ -105,5 +105,21 @@ NEXTAUTH_SECRET=your-nextauth-secret`}
         </div>
       </div>
     </div>
+  );
+}
+
+// Wrap the component with Suspense to fix the useSearchParams error
+export default function SignIn() {
+  return (
+    <Suspense fallback={
+      <div className={styles.container}>
+        <div className={styles.card}>
+          <div className={styles.loadingSpinner}></div>
+          <p>Loading sign-in options...</p>
+        </div>
+      </div>
+    }>
+      <SignInContent />
+    </Suspense>
   );
 } 

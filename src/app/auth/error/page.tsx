@@ -1,10 +1,11 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import styles from './page.module.css';
 
-export default function AuthError() {
+function AuthErrorContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
 
@@ -66,5 +67,21 @@ export default function AuthError() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Wrap with Suspense to fix the useSearchParams build error
+export default function AuthError() {
+  return (
+    <Suspense fallback={
+      <div className={styles.container}>
+        <div className={styles.errorCard}>
+          <div className={styles.loadingSpinner}></div>
+          <p>Loading error information...</p>
+        </div>
+      </div>
+    }>
+      <AuthErrorContent />
+    </Suspense>
   );
 } 
