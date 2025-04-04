@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "prisma generate && prisma migrate deploy",
+    "postbuild": "prisma generate && prisma db push",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "prisma:seed": "ts-node --transpile-only prisma/seed.ts"
   },
   "keywords": [
     "noir",
