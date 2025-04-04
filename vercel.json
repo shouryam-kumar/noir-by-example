@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "builds": [{ "src": "package.json", "use": "@vercel/next", "config": { "buildCommand": "npm run vercel-build" } }],
+  "github": {
+    "silent": true
+  }
+} 

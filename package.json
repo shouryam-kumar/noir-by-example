@@ -10,7 +10,7 @@
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "vercel-build": "prisma generate && next build"
+    "vercel-build": "prisma generate && next build && prisma db push"
   },
   "keywords": [
     "noir",
