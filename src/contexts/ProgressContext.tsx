@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { UserProgress, ChallengeProgress } from '@/types/progress';
+import { UserProgress, ChallengeProgress } from '../types/progress';
 
 interface ProgressContextType {
   progress: UserProgress | null;
