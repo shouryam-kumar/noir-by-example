@@ -1,13 +1,12 @@
 'use client';
 
-import { Challenge as ChallengeType } from '../data/challenges';
-import { useRouter } from 'next/navigation';
-import styles from '../app/challenges/[id]/page.module.css';
-import ChallengeEditor from './ChallengeEditor.client';
 import { useState, useRef, useEffect } from 'react';
+import ChallengeEditor from './ChallengeEditor.client';
+import { Challenge } from '../data/challenges';
+import styles from '../app/challenges/[id]/page.module.css';
 
 interface ChallengeContentProps {
-  challenge: ChallengeType;
+  challenge: Challenge;
   onSuccess?: () => void;
   isCompleted?: boolean;
 }

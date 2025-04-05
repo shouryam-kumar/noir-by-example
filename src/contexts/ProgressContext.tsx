@@ -9,12 +9,13 @@ interface ProgressContextType {
   updateProgress: (challengeId: string, completed: boolean) => void;
   isLoading: boolean;
   isDemoMode: boolean;
+  isCompleted: (challengeId: string) => boolean;
 }
 
 const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
 
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [progress, setProgress] = useState<UserProgress | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(false);
@@ -27,80 +28,156 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       
       // If in demo mode, initialize with demo progress
       if (demoMode && !session) {
-        const demoProgress = {
-          userId: 'demo-user',
-          challenges: [],
-          totalCompleted: 0,
-          lastActive: new Date(),
-        };
+        const storedProgress = localStorage.getItem('demoProgress');
+        const demoProgress = storedProgress 
+          ? JSON.parse(storedProgress) 
+          : {
+              userId: 'demo-user',
+              challenges: [],
+              totalCompleted: 0,
+              lastActive: new Date(),
+            };
+        
         setProgress(demoProgress);
         setIsLoading(false);
       }
     }
   }, [session]);
 
-  // Initialize user progress when session is available
+  // Fetch user progress when session is available
   useEffect(() => {
-    if (session?.user?.id) {
-      // In a real app, you would fetch the user's progress from your database
-      // For now, we'll initialize with empty progress
-      setProgress({
-        userId: session.user.id,
-        challenges: [],
-        totalCompleted: 0,
-        lastActive: new Date(),
-      });
-      setIsLoading(false);
+    async function fetchProgress() {
+      if (session?.user?.id && !isDemoMode) {
+        setIsLoading(true);
+        try {
+          const response = await fetch('/api/progress');
+          
+          if (!response.ok) {
+            throw new Error('Failed to fetch progress');
+          }
+          
+          const data = await response.json();
+          
+          // Format the data to match our UserProgress type
+          const formattedProgress: UserProgress = {
+            userId: data.userId,
+            challenges: data.progress.map((p: any) => ({
+              challengeId: p.challengeId,
+              completed: p.completed,
+              completedAt: p.lastAttempt,
+              attempts: p.attempts,
+              lastAttempt: p.lastAttempt
+            })),
+            totalCompleted: data.totalCompleted,
+            lastActive: new Date(),
+          };
+          
+          setProgress(formattedProgress);
+        } catch (error) {
+          console.error('Error fetching progress:', error);
+          // Initialize with empty progress on error
+          setProgress({
+            userId: session.user.id,
+            challenges: [],
+            totalCompleted: 0,
+            lastActive: new Date(),
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }
 
-      // If we have a real user, turn off demo mode
+    fetchProgress();
+    
+    // If we have a real user, turn off demo mode
+    if (session?.user?.id && isDemoMode) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('demoMode');
+        localStorage.removeItem('demoProgress');
         setIsDemoMode(false);
       }
     }
-  }, [session]);
+  }, [session, isDemoMode]);
 
-  const updateProgress = (challengeId: string, completed: boolean) => {
+  // Function to check if a challenge is completed
+  const isCompleted = (challengeId: string): boolean => {
+    if (!progress) return false;
+    
+    const challenge = progress.challenges.find(
+      (c) => c.challengeId === challengeId
+    );
+    
+    return !!challenge?.completed;
+  };
+
+  const updateProgress = async (challengeId: string, completed: boolean) => {
     if (!progress) return;
 
-    // If in demo mode, just store progress in memory (not persisted)
+    // Create updated progress data
     const updatedChallenges = [...progress.challenges];
     const existingChallenge = updatedChallenges.find(
       (challenge) => challenge.challengeId === challengeId
     );
 
+    const now = new Date();
+
     if (existingChallenge) {
       existingChallenge.completed = completed;
-      existingChallenge.completedAt = completed ? new Date() : undefined;
+      existingChallenge.completedAt = completed ? now : undefined;
       existingChallenge.attempts += 1;
-      existingChallenge.lastAttempt = new Date();
+      existingChallenge.lastAttempt = now;
     } else {
       updatedChallenges.push({
         challengeId,
         completed,
-        completedAt: completed ? new Date() : undefined,
+        completedAt: completed ? now : undefined,
         attempts: 1,
-        lastAttempt: new Date(),
+        lastAttempt: now,
       });
     }
 
-    setProgress({
+    const updatedProgress = {
       ...progress,
       challenges: updatedChallenges,
       totalCompleted: updatedChallenges.filter((c) => c.completed).length,
-      lastActive: new Date(),
-    });
+      lastActive: now,
+    };
 
-    // In a real app, you would save the progress to your database here
-    // Only if not in demo mode
-    if (!isDemoMode && session?.user?.id) {
-      // API call to save progress would go here
-      console.log('Saving progress for user:', session.user.id);
+    // Update local state
+    setProgress(updatedProgress);
+
+    // In demo mode, save to localStorage
+    if (isDemoMode) {
+      localStorage.setItem('demoProgress', JSON.stringify(updatedProgress));
+      return;
+    }
+
+    // For authenticated users, save to the database
+    if (session?.user?.id) {
+      try {
+        const response = await fetch('/api/progress', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            challengeId,
+            completed,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update progress');
+        }
+      } catch (error) {
+        console.error('Error saving progress:', error);
+      }
     }
   };
 
   return (
-    <ProgressContext.Provider value={{ progress, updateProgress, isLoading, isDemoMode }}>
+    <ProgressContext.Provider value={{ progress, updateProgress, isLoading, isDemoMode, isCompleted }}>
       {children}
     </ProgressContext.Provider>
   );
